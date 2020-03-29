@@ -9,7 +9,7 @@ exports.addtransaction = async (req, res, next) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            const error = new Error('Validation failed')
+            const error = new Error('Fill the Form properly')
             error.statusCode = 422
             error.data = errors.array()
             throw error;
@@ -28,7 +28,7 @@ exports.addtransaction = async (req, res, next) => {
         if (transaction_type === 'IN') {
             const available_refill_capacity = airport_capacity - airport_fuel_available
             if (available_refill_capacity < quantity) {
-                const error = new Error('Cannot refill fuel at this airport')
+                const error = new Error('Cannot refill fuel at this airport as quanity is more than available capacity')
                 error.statusCode = 404
                 throw error;
             }
@@ -57,7 +57,7 @@ exports.addtransaction = async (req, res, next) => {
                 throw error;
             }
             if (airport_fuel_available < quantity || quantity > airport_capacity) {
-                const error = new Error('Fuel is unavailable')
+                const error = new Error('Fuel is unavailable as quanity is more than available fuel')
                 error.statusCode = 404
                 throw error;
             }
@@ -136,7 +136,7 @@ exports.reversetransaction = async (req, res, next) => {
         const airport_fuel_available = airport.fuel_available
         if (transaction_type === 'IN') {
             if (airport_fuel_available < quantity) {
-                const error = new Error('Sorry!! Transaction cannot be reversed')
+                const error = new Error('Sorry!! Transaction cannot be reversed as available fuel is less the reverse fuel quanity')
                 error.statusCode = 404
                 throw error;
             }
@@ -155,7 +155,7 @@ exports.reversetransaction = async (req, res, next) => {
         if (transaction_type === 'OUT') {
             const new_reverse_fuel_out = airport_fuel_available + quantity
             if (new_reverse_fuel_out > airport_capacity) {
-                const error = new Error('Sorry!! Transaction cannot be reversed')
+                const error = new Error('Sorry!! Transaction cannot be reversed as reversing the fuel will surpass the capacity')
                 error.statusCode = 404
                 throw error;
             }

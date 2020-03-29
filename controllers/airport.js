@@ -6,7 +6,7 @@ exports.add = async (req, res, next) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            const error = new Error('Validation failed')
+            const error = new Error('Fill the Form properly')
             error.statusCode = 422
             error.data = errors.array()
             throw error;
@@ -15,7 +15,6 @@ exports.add = async (req, res, next) => {
         const fuel_capacity = req.body.airport_capacity
         const fuel_available = fuel_capacity
 
-        console.log("aaaaaa", airport_name, fuel_capacity, fuel_available)
         const airport = new Airport({
             airport_name: airport_name,
             fuel_capacity: fuel_capacity,

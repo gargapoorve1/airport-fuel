@@ -6,7 +6,7 @@ exports.add = async (req, res, next) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            const error = new Error('Validation failed')
+            const error = new Error('Fill the Form properly')
             error.statusCode = 422
             error.data = errors.array()
             throw error;
