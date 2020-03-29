@@ -125,6 +125,7 @@ exports.reversetransaction = async (req, res, next) => {
         const transaction_type = transaction.transaction_type
         const quantity = transaction.quantity
         const airport_id = transaction.airport_id
+        const aircraft_id = transaction.aircraft_id
         const airport = await Airport.findOne({ _id: airport_id })
         if (!airport) {
             const error = new Error('Airport not found')
@@ -143,17 +144,15 @@ exports.reversetransaction = async (req, res, next) => {
             await Airport.findByIdAndUpdate(airport_id, { fuel_available: String(new_reverse_fuel_in) })
             const transaction = new Transaction({
                 transaction_date_time: new Date().toISOString(),
-                transaction_type: transaction_type,
+                transaction_type: "REVERSE IN-OUT",
                 quantity: quantity,
                 airport_id: airport_id,
-                transaction_id_parent: _id
+                transaction_parent_id: _id
             })
             await transaction.save()
             res.status(200).json({ message: "Transactions reversed successfully" })
         }
         if (transaction_type === 'OUT') {
-            const aircraft_id = transaction.aircraft_id
-            const aircraft = await Aircraft.findOne({ _id: aircraft_id })
             const new_reverse_fuel_out = airport_fuel_available + quantity
             if (new_reverse_fuel_out > airport_capacity) {
                 const error = new Error('Sorry!! Transaction cannot be reversed')
@@ -163,11 +162,11 @@ exports.reversetransaction = async (req, res, next) => {
             await Airport.findByIdAndUpdate(airport_id, { fuel_available: String(new_reverse_fuel_out) })
             const transaction = new Transaction({
                 transaction_date_time: new Date().toISOString(),
-                transaction_type: transaction_type,
+                transaction_type: "REVERSE OUT-IN",
                 quantity: quantity,
                 airport_id: airport_id,
-                aircraft_id: aircraft._id,
-                transaction_id_parent: _id
+                aircraft_id: aircraft_id,
+                transaction_parent_id: _id
             })
             await transaction.save()
             res.status(200).json({ message: "Transactions reversed successfully" })
@@ -185,6 +184,14 @@ exports.reversetransaction = async (req, res, next) => {
 exports.getFuelSummary = async (req, res, next) => {
     try {
         Transaction.aggregate([
+            {
+                "$lookup": {
+                    "from": "aircrafts",
+                    "localField": "aircraft_id",
+                    "foreignField": "_id",
+                    "as": "aircraft"
+                }
+            },
             {
                 "$group": {
                     _id: "$airport_id",

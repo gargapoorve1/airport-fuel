@@ -9,7 +9,7 @@ const transactionRoutes = require('./routes/transaction');
 
 
 const app = express();
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8000
 
 app.use(bodyParser.json())
 

@@ -39,7 +39,6 @@ exports.signin = async (req, res, next) => {
     try {
         const email = req.body.email
         const password = req.body.password
-        console.log(email,password)
         let loadedUser
         const user = await User.findOne({ email: email });
         if (!user) {
@@ -58,7 +57,6 @@ exports.signin = async (req, res, next) => {
             email: loadedUser.email,
             userId: loadedUser._id.toString()
         }, 'somesupersuper', { expiresIn: '1h' });
-        console.log(token)
         res.status(200).json({ token: token, userId: loadedUser._id.toString() })
     } catch (err) {
         if (!err.statusCode) {

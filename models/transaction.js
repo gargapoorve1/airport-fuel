@@ -14,6 +14,9 @@ const transactionSchema = new Schema({
         type: Number,
         required: true
     },
+    transaction_parent_id: {
+        type: String
+    },
     airport_id: {
         type: Schema.Types.ObjectId,
         ref: 'Airport',
@@ -22,10 +25,6 @@ const transactionSchema = new Schema({
     aircraft_id: {
         type: Schema.Types.ObjectId,
         ref: 'Aircraft'
-    },
-    transaction_parent_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Transaction'
     }
 }, { timestamps: true })
 
