@@ -7,4 +7,3 @@ TO run the code please run below commands.
 
 By this our backend code will be running on localhost:8000
 
-simulatneously run Front end code.
